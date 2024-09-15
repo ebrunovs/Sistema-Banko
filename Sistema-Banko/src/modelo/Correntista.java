@@ -1,7 +1,3 @@
-/**
- * SI - POO - Prof. Fausto Ayres
- *
- */
 package modelo;
 
 import java.util.ArrayList;

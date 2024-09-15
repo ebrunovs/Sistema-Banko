@@ -1,8 +1,4 @@
 package regras_negocio;
-/**********************************
- * POO - Fausto Ayres
- **********************************/
-
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -38,16 +34,20 @@ public class Fachada {
 		Correntista c = new Correntista(CPF, nome, senha) ;
 		
 		repositorio.adicionar(c);
-		//repositorio.salvarObjetos();
-		
+		repositorio.salvarObjetos();
 	}
 	
 	public static void criarConta(String CPF) throws Exception {
 		CPF = CPF.trim();
 		
 		Correntista correntista = repositorio.localizarCorrentista(CPF);
+		for (Conta c: repositorio.getContas()) {
+			if(c.getCorrentistas().get(0).getCPF().equals(CPF)) {
+				throw new Exception ("criar conta: o correntista não pode ser vinculado, pois já é titular em outra conta.");
+			};
+		}
 		if(correntista==null) {
-			throw new Exception ("criar conta: não há o correntista para vincular.");
+			throw new Exception ("criar conta: não há o correntista para vincular titulo.");
 		}
 		
 		int id = repositorio.gerarIdConta();
@@ -58,6 +58,7 @@ public class Fachada {
 		correntista.adicionar(conta);
 		
 		repositorio.adicionar(conta);
+		repositorio.salvarObjetos();
 	}	
 
 	public static void criarContaEspecial(String CPF, double limite) throws Exception {
@@ -79,6 +80,7 @@ public class Fachada {
 		correntista.adicionar(conta);
 		
 		repositorio.adicionar(conta);
+		repositorio.salvarObjetos();
 	}
 	
 	public static void inserirCorrentistaConta(int id,String CPF) throws Exception {
@@ -98,84 +100,119 @@ public class Fachada {
 		conta.adicionar(correntista);
 	}
 	
-	/*
-	 * public static void adicionarParticipanteEvento(String nome, int id) throws
-	 * Exception { nome = nome.trim();
-	 * 
-	 * //localizar participante no repositorio, usando o nome Conta p =
-	 * repositorio.localizarParticipante(nome); if(p == null) throw new
-	 * Exception("adicionar participante:  " + nome + " inexistente");
-	 * 
-	 * //localizar evento no repositorio, usando id Correntista ev =
-	 * repositorio.localizarEvento(id); if(ev == null) throw new
-	 * Exception("adicionar participante: evento " + id + " inexistente");
-	 * 
-	 * //localizar o participante no evento, usando o nome Conta paux =
-	 * ev.localizar(nome); if(paux != null) throw new
-	 * Exception("N�o adicionou participante: " + nome + " j� participa do evento "
-	 * + id);
-	 * 
-	 * //adicionar o participante ao evento ev.adicionar(p); //adicionar o evento ao
-	 * participante p.adicionar(ev); //gravar reposit�rio
-	 * repositorio.salvarObjetos(); }
-	 * 
-	 * public static void removerParticipanteEvento(String nome, int id) throws
-	 * Exception { nome = nome.trim();
-	 * 
-	 * //localizar participante no repositorio, usando o nome Conta p =
-	 * repositorio.localizarParticipante(nome); if(p == null) throw new
-	 * Exception("remover participante: participante " + nome + " inexistente");
-	 * 
-	 * 
-	 * //localizar evento no repositorio, usando id Correntista ev =
-	 * repositorio.localizarEvento(id); if(ev == null) throw new
-	 * Exception("remover participante: evento " + id + " inexistente");
-	 * 
-	 * 
-	 * //localizar o participante no evento, usando o nome Conta paux =
-	 * ev.localizar(nome); if(paux == null) throw new
-	 * Exception("remover participante: " + nome + " nao participa do evento " +
-	 * id);
-	 * 
-	 * //remover o participante do evento ev.remover(p); //remover o evento do
-	 * participante p.remover(ev); //gravar reposit�rio repositorio.salvarObjetos();
-	 * }
-	 * 
-	 * public static void apagarEvento(String data) throws Exception { //localizar
-	 * evento no repositorio, usando id Correntista ev =
-	 * repositorio.localizarEvento(data); if (ev == null) throw new
-	 * Exception("apagar evento: data " + data + " inexistente");
-	 * 
-	 * //Remover todos os participantes deste evento for(Conta p :
-	 * ev.getParticipantes()) { p.remover(ev); } ev.getParticipantes().clear();
-	 * 
-	 * //remover evento do reposit�rio repositorio.remover(ev); //gravar reposit�rio
-	 * repositorio.salvarObjetos(); }
-	 * 
-	 * public static void adiarEvento(String data, String novadata) throws Exception
-	 * { //localizar evento no repositorio, usando data Correntista ev =
-	 * repositorio.localizarEvento(data); if (ev == null) throw new
-	 * Exception("adiar evento: data inexistente " + data);
-	 * 
-	 * //localizar evento no repositorio, usando novadata Correntista ev2 =
-	 * repositorio.localizarEvento(novadata); if (ev2 != null) throw new
-	 * Exception("adiar evento: ja tem evento na nova data " + novadata);
-	 * 
-	 * //alterar a data do evento ev.setData(novadata); //gravar reposit�rio
-	 * repositorio.salvarObjetos(); }
-	 * 
-	 * public static void apagarParticipante(String nome) throws Exception { nome =
-	 * nome.trim();
-	 * 
-	 * //localizar participante no repositorio, usando o nome Conta p =
-	 * repositorio.localizarParticipante(nome); if(p == null) throw new
-	 * Exception("apagar participante: participante " + nome + " inexistente");
-	 * 
-	 * //participante nao pode ser deletado caso participe de algum evento
-	 * if(!p.getEventos().isEmpty()) throw new
-	 * Exception("apagar participante: participante " + nome + " ainda tem evento");
-	 * 
-	 * //remover o participante do repositorio repositorio.remover(p); //gravar
-	 * reposit�rio repositorio.salvarObjetos(); }
-	 */
+	public static void removerCorrentistaConta(int id,String CPF) throws Exception {
+		CPF = CPF.trim();
+		
+		Correntista correntista = repositorio.localizarCorrentista(CPF);
+		Conta conta = repositorio.localizarConta(id);
+		if(correntista==null) {
+			throw new Exception ("remover correntista conta: não existe o correntista para remover vinculo.");
+		}
+		
+		if(conta==null) {
+			throw new Exception ("remover correntista conta: não existe a conta para remover vinculo.");
+		}
+		for (Conta c: repositorio.getContas()) {
+			if(c.getId() == id) {				
+				if(c.getCorrentistas().get(0).getCPF().equals(CPF)) {
+					throw new Exception ("remover correntista: o correntista não pode ser removido, pois ele é o titular da conta.");
+				};
+			}
+		}
+		
+		correntista.remover(conta);
+		conta.remover(correntista);
+	}
+	
+	public static void apagarConta(int id) throws Exception{
+		Conta conta = repositorio.localizarConta(id);
+		
+		if(conta==null) {
+			throw new Exception ("apagar conta: conta inexistente.");
+		}
+		
+		for(Conta c: repositorio.getContas()) {
+			if(c.getId() == id && c.getSaldo() != 0) {
+				throw new Exception ("apagar conta: a conta nao pode ser apagada pois seu saldo não é zero.");
+			}
+		}
+		
+		for (Correntista c: conta.getCorrentistas()) {
+			c.remover(conta);
+		}
+		
+		conta.getCorrentistas().clear();
+		
+		repositorio.remover(conta);
+	}
+
+	public static void creditarValor(int id, String CPF, String senha, double valor ) throws Exception {
+		CPF = CPF.trim();
+		senha = senha.trim();
+		
+		Correntista correntista = repositorio.localizarCorrentista(CPF);
+		if(correntista==null) {
+			throw new Exception ("creditar valor: correntista inexistente.");
+		}
+		if(!correntista.getSenha().equals(senha)) {
+			throw new Exception ("creditar valor: senha incorreta.");
+		}
+		
+		for(Conta c: correntista.getContas()) {
+			if(c.getId() == id) {
+				if(c instanceof ContaEspecial && c.getSaldo()-valor >= (-((ContaEspecial) c).getLimite()) ) {
+					c.creditar(valor);
+				}
+				else if(c.getSaldo()-valor >= 0) {
+					c.creditar(valor);
+				}
+				else {
+					throw new Exception ("creditar valor: não é possivel creditar esse valor.");
+				}
+			}
+		}
+	}
+	
+	public static void debitarValor(int id, String CPF, String senha, double valor ) throws Exception {
+		CPF = CPF.trim();
+		senha = senha.trim();
+		
+		Correntista correntista = repositorio.localizarCorrentista(CPF);
+		if(correntista==null) {
+			throw new Exception ("debitar valor: correntista inexistente.");
+		}
+		if(!correntista.getSenha().equals(senha)) {
+			throw new Exception ("debitar valor: senha incorreta.");
+		}
+		
+		for(Conta c: correntista.getContas()) {
+			if(c.getId() == id) {
+				c.debitar(valor);
+			}
+		}
+	}
+	
+	public static void transferirValor(int id1, String CPF, String senha, double valor,int id2 ) throws Exception {
+		CPF = CPF.trim();
+		senha = senha.trim();
+		
+		Correntista correntista = repositorio.localizarCorrentista(CPF);
+		if(correntista==null) {
+			throw new Exception ("transferir valor: correntista inexistente.");
+		}
+		if(!correntista.getSenha().equals(senha)) {
+			throw new Exception ("transferir valor: senha incorreta.");
+		}
+		
+		for(Conta c1: correntista.getContas()) {
+			if(c1.getId() == id1) {
+				c1.creditar(valor);
+				for(Conta c2: correntista.getContas()) {
+					if(c2.getId() == id2) {
+						c2.debitar(valor);
+					}
+				}
+			}
+		}
+	}
 }
