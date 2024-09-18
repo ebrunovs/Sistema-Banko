@@ -8,8 +8,12 @@ public class ContaEspecial extends Conta {
 		this.limite = limite;
 	}
 
-	public void debitar(double valor) {
-		this.saldo += valor;
+	public void debitar(double valor) throws Exception {
+		if(this.getSaldo()-valor >= (-this.getLimite())) {	
+			this.saldo -= valor;
+		}else {
+			throw new Exception ("debitar valor: não é possivel debitar esse valor.");
+		}
 	}
 	
 	@Override

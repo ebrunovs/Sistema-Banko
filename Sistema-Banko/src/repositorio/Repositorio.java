@@ -75,13 +75,10 @@ public class Repositorio {
 	}
 	
 	public void carregarObjetos()  	{
-		// carregar para o repositorio os objetos dos arquivos csv
 		try {
-			//caso os arquivos nao existam, serao criados vazios
 			File f1 = new File( new File(".\\correntistas.csv").getCanonicalPath() ) ; 
 			File f2 = new File( new File(".\\contas.csv").getCanonicalPath() ) ; 
 			if (!f1.exists() || !f2.exists() ) {
-				//System.out.println("criando arquivo .csv vazio");
 				FileWriter arquivo1 = new FileWriter(f1); arquivo1.close();
 				FileWriter arquivo2 = new FileWriter(f2); arquivo2.close();
 				return;
@@ -132,7 +129,6 @@ public class Repositorio {
 			while(arquivo2.hasNextLine()) 	{
 				linha = arquivo2.nextLine().trim();	
 				partes = linha.split(";");
-				//System.out.println(Arrays.toString(partes));
 				tipo = partes[0];
 				id = partes[1];
 				data = partes[2];
@@ -156,7 +152,6 @@ public class Repositorio {
 
 	//--------------------------------------------------------------------
 	public void	salvarObjetos()  {
-		//gravar nos arquivos csv os objetos que est�o no reposit�rio
 		try	{
 			File f = new File( new File(".\\correntistas.csv").getCanonicalPath())  ;
 			FileWriter arquivo1 = new FileWriter(f); 

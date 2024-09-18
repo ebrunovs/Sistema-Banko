@@ -160,15 +160,7 @@ public class Fachada {
 		
 		for(Conta c: correntista.getContas()) {
 			if(c.getId() == id) {
-				if(c instanceof ContaEspecial && c.getSaldo()-valor >= (-((ContaEspecial) c).getLimite()) ) {
-					c.creditar(valor);
-				}
-				else if(c.getSaldo()-valor >= 0) {
-					c.creditar(valor);
-				}
-				else {
-					throw new Exception ("creditar valor: não é possivel creditar esse valor.");
-				}
+				c.creditar(valor);
 			}
 		}
 	}
@@ -187,32 +179,37 @@ public class Fachada {
 		
 		for(Conta c: correntista.getContas()) {
 			if(c.getId() == id) {
-				c.debitar(valor);
+				if(c instanceof ContaEspecial) {
+					c.debitar(valor);
+				}
+				else{
+					c.debitar(valor);
+				}
 			}
 		}
 	}
+	
 	
 	public static void transferirValor(int id1, String CPF, String senha, double valor,int id2 ) throws Exception {
 		CPF = CPF.trim();
 		senha = senha.trim();
 		
 		Correntista correntista = repositorio.localizarCorrentista(CPF);
+		Conta conta1 = repositorio.localizarConta(id1);
+		Conta conta2 = repositorio.localizarConta(id1);
 		if(correntista==null) {
 			throw new Exception ("transferir valor: correntista inexistente.");
 		}
 		if(!correntista.getSenha().equals(senha)) {
 			throw new Exception ("transferir valor: senha incorreta.");
 		}
-		
-		for(Conta c1: correntista.getContas()) {
-			if(c1.getId() == id1) {
-				c1.creditar(valor);
-				for(Conta c2: correntista.getContas()) {
-					if(c2.getId() == id2) {
-						c2.debitar(valor);
-					}
-				}
-			}
+		if(conta1 == null) {
+			throw new Exception ("transferir valor: Conta com id1 inexistente.");
 		}
+		if(conta2 == null) {
+			throw new Exception ("transferir valor: Conta com id2 inexistente.");
+		}
+		
+		conta1.transferir(valor,conta2);
 	}
 }

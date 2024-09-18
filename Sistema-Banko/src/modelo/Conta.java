@@ -31,16 +31,20 @@ public class Conta {
 	
 
 	public void creditar(double valor) {
-		this.saldo -= valor;
-	}
-
-	public void debitar(double valor) {
 		this.saldo += valor;
 	}
 
-	public void transferir(double valor, Conta destino) {
-		this.saldo -= valor;
-		destino.saldo += valor;
+	public void debitar(double valor) throws Exception {
+		if(!(this.saldo - valor <= 0)) {
+			this.saldo -= valor;
+		} else {
+			throw new Exception ("debitar valor: não é possivel debitar esse valor.");
+		}
+	}
+
+	public void transferir(double valor, Conta destino) throws Exception {
+		this.debitar(valor);
+		destino.creditar(valor);
 	}
 	
 
