@@ -19,6 +19,7 @@ public class Repositorio {
 	public Repositorio() {
 		carregarObjetos();
 	}
+	
 	public void adicionar(Conta c)	{
 		contas.add(c);
 	}
@@ -39,6 +40,7 @@ public class Repositorio {
 		ArrayList<Correntista> ordenarCorrentistas = new ArrayList<>(this.correntistas);
 		ordenarCorrentistas.sort(Comparator.comparing(Correntista::getCPF));
 	}
+	
 	public void remover(Correntista c)	{
 		correntistas.remove(c);
 	}
