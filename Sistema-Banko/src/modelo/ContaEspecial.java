@@ -8,8 +8,9 @@ public class ContaEspecial extends Conta {
 		this.limite = limite;
 	}
 
+	@Override
 	public void debitar(double valor) throws Exception {
-		if(this.getSaldo()-valor >= (-this.getLimite())) {	
+		if(valor <= this.getLimite()+this.getSaldo()) {	
 			this.saldo -= valor;
 		}else {
 			throw new Exception ("debitar valor: não é possivel debitar esse valor.");
@@ -18,9 +19,9 @@ public class ContaEspecial extends Conta {
 	
 	@Override
 	public String toString() {
-		String texto = "Conta: id=" + id + ", data=" + data + ", saldo=" + saldo + " ,limite=" + limite;
+		String texto = "Conta: id=" + id + ", data=" + data + ", saldo=" + saldo + ", limite=" + limite;
 		
-		texto += "correntistas: ";
+		texto += ", correntistas: ";
 		for(Correntista c : getCorrentistas())
 			texto += c.getCPF() + ", ";
 		return texto;

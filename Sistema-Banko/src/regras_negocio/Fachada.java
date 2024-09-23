@@ -14,7 +14,7 @@ public class Fachada {
 	public static ArrayList<Correntista> listarCorrentistas() 	{
 		return repositorio.getCorrentistas();
 	}
-	public static ArrayList<Conta> listarContas(String nome) {
+	public static ArrayList<Conta> listarContas() {
 		return repositorio.getContas();
 	}
 	
@@ -23,11 +23,15 @@ public class Fachada {
 		nome = nome.trim();
 		senha = senha.trim();
 
+		if (repositorio.localizarCorrentista(CPF) != null) {
+			throw new Exception ("criar correntista: Correntista já existente.");
+		}
+		
 		if (senha.length() != 4) {
 			throw new Exception ("criar correntista: senha deve ter 4 digitos.");
 		}
 		
-		if(!Pattern.matches("[0-9]",senha)) {
+		if(!Pattern.matches("[0-9]+",senha)) {
 			throw new Exception ("criar correntista: senha deve ser numerica.");
 		}
 		
@@ -98,6 +102,7 @@ public class Fachada {
 		
 		correntista.adicionar(conta);
 		conta.adicionar(correntista);
+		repositorio.salvarObjetos();
 	}
 	
 	public static void removerCorrentistaConta(int id,String CPF) throws Exception {
@@ -163,6 +168,8 @@ public class Fachada {
 				c.creditar(valor);
 			}
 		}
+		
+		repositorio.salvarObjetos();
 	}
 	
 	public static void debitarValor(int id, String CPF, String senha, double valor ) throws Exception {
@@ -178,25 +185,27 @@ public class Fachada {
 		}
 		
 		for(Conta c: correntista.getContas()) {
-			if(c.getId() == id) {
-				if(c instanceof ContaEspecial) {
-					c.debitar(valor);
-				}
-				else{
-					c.debitar(valor);
-				}
-			}
-		}
+	        if(c.getId() == id) {
+	            if (c instanceof ContaEspecial) {
+	                ((ContaEspecial) c).debitar(valor);
+	            } else {
+	                c.debitar(valor);
+	            }
+	            break;
+	        }
+	    }
+		
+		repositorio.salvarObjetos();
 	}
 	
 	
 	public static void transferirValor(int id1, String CPF, String senha, double valor,int id2 ) throws Exception {
 		CPF = CPF.trim();
 		senha = senha.trim();
-		
+
 		Correntista correntista = repositorio.localizarCorrentista(CPF);
 		Conta conta1 = repositorio.localizarConta(id1);
-		Conta conta2 = repositorio.localizarConta(id1);
+		Conta conta2 = repositorio.localizarConta(id2);
 		if(correntista==null) {
 			throw new Exception ("transferir valor: correntista inexistente.");
 		}
@@ -211,5 +220,7 @@ public class Fachada {
 		}
 		
 		conta1.transferir(valor,conta2);
+		
+		repositorio.salvarObjetos();
 	}
 }

@@ -35,7 +35,7 @@ public class Conta {
 	}
 
 	public void debitar(double valor) throws Exception {
-		if(!(this.saldo - valor <= 0)) {
+		if(this.saldo - valor >= 0) {
 			this.saldo -= valor;
 		} else {
 			throw new Exception ("debitar valor: não é possivel debitar esse valor.");
@@ -52,7 +52,7 @@ public class Conta {
 	public String toString() {
 		String texto = "Conta: id=" + id + ", data=" + data + ", saldo=" + saldo;
 		
-		texto += "correntistas: ";
+		texto += ", correntistas: ";
 		for(Correntista c : correntistas)
 			texto += c.getCPF() + ", ";
 		return texto;

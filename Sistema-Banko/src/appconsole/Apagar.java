@@ -12,15 +12,11 @@ public class Apagar {
 
 	public Apagar() {
 		try {
-			Fachada.apagarConta("maria");
-			System.out.println("apagou maria");
-			
-			Fachada.apagarCorrentista("30/10/2024");
-			System.out.println("apagou evento na data 30/10/2024");
-
+			Fachada.apagarConta(1);		
+			System.out.println("apagou conta");
 		} catch (Exception e) {
-			System.out.println("--->" + e.getMessage());
-		}
+			System.out.println("--->"+e.getMessage());
+		}	
 	}
 
 	public static void main(String[] args) {

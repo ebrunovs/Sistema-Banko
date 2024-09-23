@@ -5,19 +5,19 @@ package appconsole;
  * 
  */
 
-import modelo.Correntista;
 import modelo.Conta;
+import modelo.Correntista;
 import regras_negocio.Fachada;
 
 public class Listar {
 
 	public Listar() {
 		try {
-			System.out.println("\n---------listagem de Contas (arquivo)-----");
-			for(Conta p : Fachada.listarContas("")) 
+			System.out.println("\n---------listagem de contas-----");
+			for(Conta p : Fachada.listarContas()) 
 				System.out.println(p);
 
-			System.out.println("\n---------listagem de Correntistas (arquivo) ----");
+			System.out.println("\n---------listagem de correntistas ----");
 			for(Correntista e : Fachada.listarCorrentistas()) 
 				System.out.println(e);
 			
