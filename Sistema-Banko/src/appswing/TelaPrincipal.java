@@ -2,7 +2,7 @@ package appswing;
 /**********************************
  * IFPB - Curso Superior de Tec. em Sist. para Internet
  * POO
- * Prof. Fausto Maranhão Ayres
+ * Prof. Fausto Maranhï¿½o Ayres
  **********************************/
 
 import java.awt.EventQueue;
@@ -20,20 +20,17 @@ import javax.swing.SwingConstants;
 
 public class TelaPrincipal {
 	private JFrame frame;
-	private JMenu mnParticipante;
-	private JMenu mnEvento;
+	private JMenu mnCorrentistas;
+	private JMenu mnContas;
+	private JMenu mnCaixa;
 	private JLabel label;
-
-
-	/**
-	 * Launch the application.
-	 */
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaPrincipal window = new TelaPrincipal();
-					window.frame.setVisible(true);
+					TelaPrincipal frame = new TelaPrincipal();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -41,20 +38,22 @@ public class TelaPrincipal {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
+
+	protected void setVisible(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	public TelaPrincipal() {
 		initialize();
 		frame.setVisible(true);
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	
 	private void initialize() {
 		frame = new JFrame();
-		frame.setTitle("ALLive - Agenda de eventos");
+		frame.setTitle("Sistema Banko");
 		frame.setBounds(100, 100, 450, 363);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -64,7 +63,7 @@ public class TelaPrincipal {
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setText("Inicializando...");
 		label.setBounds(0, 0, 450, 313);
-		ImageIcon imagem = new ImageIcon(getClass().getResource("/arquivos/imagem.jpg"));
+		ImageIcon imagem = new ImageIcon(getClass().getResource("/arquivos/Banko.jpeg"));
 		imagem = new ImageIcon(imagem.getImage().getScaledInstance(label.getWidth(),label.getHeight(), Image.SCALE_DEFAULT));//		label.setIcon(fotos);
 		label.setIcon(imagem);
 		frame.getContentPane().add(label);
@@ -72,23 +71,32 @@ public class TelaPrincipal {
 
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
-		mnParticipante = new JMenu("Participante");
-		mnParticipante.addMouseListener(new MouseAdapter() {
+		mnCorrentistas = new JMenu("Correntistas");
+		mnCorrentistas.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				TelaParticipantes tela = new TelaParticipantes();
+				TelaCorrentistas tela = new TelaCorrentistas();
 			}
 		});
-		menuBar.add(mnParticipante);
+		menuBar.add(mnCorrentistas);
 
-		mnEvento = new JMenu("Evento");
-		mnEvento.addMouseListener(new MouseAdapter() {
+		mnContas = new JMenu("Contas");
+		mnContas.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				TelaEventos tela = new TelaEventos();
+				TelaContas tela = new TelaContas();
 			}
 		});
-		menuBar.add(mnEvento);
+		menuBar.add(mnContas);
+		
+		mnCaixa = new JMenu("Caixa");
+		mnCaixa.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				TelaCaixa tela = new TelaCaixa();
+			}
+		});
+		menuBar.add(mnCaixa);
 	}
 
 }
